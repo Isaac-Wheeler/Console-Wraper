@@ -45,6 +45,7 @@ public class Log
         Date date = new Date();
         try {
             File log = new File(logLocation, logName + dateFormat.format(date) + ".txt");
+            log.getParentFile().mkdir();
             this.out = new PrintWriter(new FileWriter(log, true));
         }catch (IOException e) {
 			System.err.println(e.getMessage());
