@@ -6,7 +6,7 @@
 
   <groupId>mcc</groupId>
   <artifactId>consoleWraper</artifactId>
-  <version>1.0</version>
+  <version>1.0.${BUILD_NUMBER}</version>
 
   <name>consoleWraper</name>
   <!-- FIXME change it to the project's website -->
