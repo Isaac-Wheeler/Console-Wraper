@@ -44,7 +44,7 @@ public class Log
         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
         Date date = new Date();
         try {
-            File log = new File(logLocation, logName + dateFormat.format(date) + ".txt");
+            File log = new File(logLocation, logName + "-" + dateFormat.format(date) + ".txt");
             log.getParentFile().mkdir();
             this.out = new PrintWriter(new FileWriter(log, true));
         }catch (IOException e) {
