@@ -50,7 +50,9 @@ public class App {
             throw new MissingFileException("Missing jar File");
         }
 
-        Server server1 = new Server(jarFile, serverNumber, directory);
+        String[] args = {"-Xmx1024M ","-Xms1024M "}; //todo add java options, create via dynamic 
+
+        Server server1 = new Server(jarFile, serverNumber, directory, args);
         Thread t = new Thread(server1);
         t.start();
     }
