@@ -2,6 +2,8 @@ package mcc;
 
 import java.io.File;
 import mcc.Exception.MissingFileException;
+import mcc.common.Log;
+import mcc.server.Server;
 
 /**
  * Hello world!

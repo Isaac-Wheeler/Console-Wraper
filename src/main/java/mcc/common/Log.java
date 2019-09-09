@@ -1,4 +1,4 @@
-package mcc;
+package mcc.common;
 
 import java.io.PrintWriter;
 import java.io.File;

@@ -1,4 +1,4 @@
-package mcc;
+package mcc.server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,7 +10,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-import mcc.Player.Player;
+import mcc.App;
+import mcc.common.Log;
+import mcc.server.player.Ops;
+import mcc.server.player.Player;
 
 public class Server implements Runnable {
 
@@ -25,10 +28,7 @@ public class Server implements Runnable {
     Process process;
     String[] args;
     ArrayList<Player> players;
-
-    enum State {
-        STARTED, RUNNING, STOPPED, STOPPING, CRASHED;
-    }
+    ArrayList<Ops> ops;
 
     State serverState;
 
@@ -46,6 +46,7 @@ public class Server implements Runnable {
         this.directory = directory;
         this.args = args;
         this.players = new ArrayList<Player>();
+        this.ops = new ArrayList<Ops>();
 
         // Create log Files for server
         File logLocation = new File("Minecraft/Log");
@@ -54,6 +55,8 @@ public class Server implements Runnable {
         error = new Log("server" + serverNumber + "-error", logLocation);
         inputLog = new Log("server" + serverNumber + "-input", logLocation);
     }
+
+    
 
     public void writeCommand(String msg) {
         this.msg = msg;
@@ -81,7 +84,7 @@ public class Server implements Runnable {
         javaCommand.append("\"" + jarFile.getAbsolutePath() + "\"");
         // javaCommand.append(" nogui"); TODO: undo
 
-        if (App.isWindows) {
+        if (App.isWindows) {//TODO: replace with settings.java
             pb.command("cmd.exe", "/c", javaCommand.toString());
         } else {
             pb.command("bash", "-c", javaCommand.toString());

@@ -18,6 +18,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <jdk.version>1.7</jdk.version>
   </properties>
 
   <dependencies>
@@ -37,62 +38,52 @@
   </dependencies>
 
   <build>
-    <pluginManagement>      <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <archive>
-              <manifest>
-                <addClasspath>true</addClasspath>
-                <mainClass>mcc.App</mainClass>
-                <classpathPrefix>dependency-jars/</classpathPrefix>
-              </manifest>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.5.1</version>
-          <executions>
-            <execution>
-              <id>copy-dependencies</id>
-              <phase>package</phase>
-              <goals>
-                <goal>copy-dependencies</goal>
-              </goals>
-              <configuration>
-                <!-- exclude junit, we need runtime dependency only -->
-                <includeScope>runtime</includeScope>
-                <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <finalName>consoleWraper-${project.version}</finalName>
+    <plugins>
+
+
+
+      <!-- Set a compiler level -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+        </configuration>
+      </plugin>
+
+      <!-- Make this jar executable -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>mcc.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- Includes the runtime dependencies -->
+      <plugin>
+        <groupId>com.jolira</groupId>
+        <artifactId>onejar-maven-plugin</artifactId>
+        <version>1.4.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>one-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
   </build>
+
+  
+
 </project>

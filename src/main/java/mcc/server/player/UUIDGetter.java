@@ -1,4 +1,4 @@
-package mcc.Player;
+package mcc.server.player;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

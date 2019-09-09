@@ -1,7 +1,7 @@
-package mcc;
+package mcc.server;
 
-import mcc.Player.Player;
-import mcc.Server.State;
+import mcc.server.player.Player;
+import mcc.server.State;
 
 public class ProcessServerOutput {
 
@@ -24,9 +24,9 @@ public class ProcessServerOutput {
             line = array[2].substring(2);
 
             if (line.contains("Done (") == true) {
-                server.setState(Server.State.RUNNING);
+                server.setState(State.RUNNING);
             } else if (line.contains("Stopping server") == true) {
-                server.setState(Server.State.STOPPING);
+                server.setState(State.STOPPING);
             } else if (line.contains("joined the game")) {
                 array = line.split(" ");
 

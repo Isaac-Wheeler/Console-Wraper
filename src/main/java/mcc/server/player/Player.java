@@ -1,4 +1,4 @@
-package mcc.Player;
+package mcc.server.player;
 
 import java.net.URI;
 import java.net.URISyntaxException;

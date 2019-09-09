@@ -1,4 +1,4 @@
-package mcc.Player;
+package mcc.server.player;
 
 import java.util.Objects;
 
