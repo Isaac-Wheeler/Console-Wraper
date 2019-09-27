@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import mcc.App;
 import mcc.common.Log;
+import mcc.configs.ConfigServer;
 import mcc.server.player.Ops;
 import mcc.server.player.Player;
 
@@ -40,11 +41,11 @@ public class Server implements Runnable {
         return serverState;
     }
 
-    public Server(File jarFile, int serverNumber, File directory, String[] args) {
-        this.jarFile = jarFile;
-        this.serverNumber = serverNumber;
-        this.directory = directory;
-        this.args = args;
+    public Server(ConfigServer config) {
+        this.jarFile = config.getJarFile();
+        this.serverNumber = config.getServerNumber();
+        this.directory = config.getDirectory();
+        this.args = config.getArgs();
         this.players = new ArrayList<Player>();
         this.ops = new ArrayList<Ops>();
 
