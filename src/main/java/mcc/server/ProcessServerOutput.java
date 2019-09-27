@@ -34,12 +34,7 @@ public class ProcessServerOutput {
 
             } else if (line.contains("left the game")) {
                 array = line.split(" ");
-
-                System.out.println(server.players);
-
                 server.players.remove(new Player(array[0]));
-
-                System.out.println(server.players);
             }
 
         }

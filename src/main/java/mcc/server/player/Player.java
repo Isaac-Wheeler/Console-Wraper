@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+import mcc.server.Server;
+
 public class Player {
 
     String uuid, name, rank;
@@ -13,7 +15,7 @@ public class Player {
     private void loadSkin() {
         // Source: https://crafatar.com/
 
-        if(uuid == null){
+        if (uuid == null) {
             loadUUID();
         }
 
@@ -25,25 +27,48 @@ public class Player {
         }
     }
 
-    private boolean loadUUID(){
+    private boolean loadUUID() {
         String uuid = UUIDGetter.getUUID(this.name);
-        if(uuid == null){
+        if (uuid == null) {
             return false;
         }
         this.uuid = uuid;
         return true;
     }
 
+    private void CommandOnPlayer(String command, Server server, String reason){
+        server.writeCommand(command + name + reason);
+    }
 
+    private void CommandOnPlayer(String command, Server server){
+        this.CommandOnPlayer(command, server, "");
+    }
 
+    public void kick(Server server, String reason){
+        CommandOnPlayer("/kick ", server, reason);
+    }
+
+    public void kick(Server server){
+        this.kick(server, "");
+    }
+
+    public void ban(Server server, String reason){
+        CommandOnPlayer("/ban ", server, reason);
+    }
+
+    public void ban(Server server){
+        this.ban(server, "");
+    }
+
+    public void op(Server server){
+        CommandOnPlayer("/op ", server);
+    }
 
     public Player(String name) {
         this.name = name;
-        System.out.println(loadUUID());
-        System.out.println(uuid);
+        loadUUID();
         loadSkin();
     }
-
 
     public String getUuid() {
         return this.uuid;
@@ -85,17 +110,10 @@ public class Player {
         this.playerAvatar = playerAvatar;
     }
 
-
-
     @Override
     public String toString() {
-        return "{" +
-            " uuid='" + getUuid() + "'" +
-            ", name='" + getName() + "'" +
-            ", rank='" + getRank() + "'" +
-            ", op='" + getOp() + "'" +
-            ", playerAvatar='" + getPlayerAvatar() + "'" +
-            "}";
+        return "{" + " uuid='" + getUuid() + "'" + ", name='" + getName() + "'" + ", rank='" + getRank() + "'"
+                + ", op='" + getOp() + "'" + ", playerAvatar='" + getPlayerAvatar() + "'" + "}";
     }
 
     @Override
@@ -113,7 +131,5 @@ public class Player {
     public int hashCode() {
         return Objects.hash(uuid, name);
     }
-
-
 
 }
