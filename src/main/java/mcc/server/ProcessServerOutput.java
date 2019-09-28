@@ -1,6 +1,7 @@
 package mcc.server;
 
 import mcc.server.player.Player;
+import mcc.DBot.DBot;
 import mcc.server.State;
 
 public class ProcessServerOutput {
@@ -22,6 +23,8 @@ public class ProcessServerOutput {
             String time = array[0];
             String warnLevel = array[1];
             line = array[2].substring(2);
+
+            DBot.getInstance().writeConsole(server.config.getChannelID(), line);
 
             if (line.contains("Done (") == true) {
                 server.setState(State.RUNNING);

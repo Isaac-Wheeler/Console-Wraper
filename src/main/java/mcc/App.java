@@ -1,11 +1,18 @@
 package mcc;
 
 import java.io.File;
+
+import javax.security.auth.login.LoginException;
+
+import mcc.DBot.DBot;
 import mcc.Exception.MissingFileException;
 import mcc.common.Log;
 import mcc.server.Server;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import mcc.configs.Config;
 import mcc.configs.ConfigServer;
+
 /**
  * Hello world!
  *
@@ -36,6 +43,15 @@ public class App {
         Config config = Config.getInstance();
         config.loadConfig();
 
+        if(config.isEnable_discord()){
+            try {
+                DBot.main();
+            } catch (LoginException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        } 
+        
         try {
             for (ConfigServer configServer : config.getServers()) {
                 startServer(configServer);
@@ -74,7 +90,7 @@ public class App {
         String[] args = {"-Xmx1024M ","-Xms1024M "}; //todo add java options, create via dynamic 
 
         //TODO add to config / load from config
-        ConfigServer server = new ConfigServer(jarFile, directory, serverNumber, args);
+        ConfigServer server = new ConfigServer(jarFile, directory, serverNumber, args, "627358163217416203");
         Config.getInstance().addServer(server);
     }
 

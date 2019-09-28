@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import mcc.App;
+import mcc.DBot.DBot;
 import mcc.common.Log;
 import mcc.configs.ConfigServer;
 import mcc.server.player.Ops;
@@ -31,6 +32,8 @@ public class Server implements Runnable {
     ArrayList<Player> players;
     ArrayList<Ops> ops;
 
+    ConfigServer config;
+
     State serverState;
 
     public void setState(State state) {
@@ -48,6 +51,7 @@ public class Server implements Runnable {
         this.args = config.getArgs();
         this.players = new ArrayList<Player>();
         this.ops = new ArrayList<Ops>();
+        this.config = config;
 
         // Create log Files for server
         File logLocation = new File("Minecraft/Log");
@@ -56,8 +60,6 @@ public class Server implements Runnable {
         error = new Log("server" + serverNumber + "-error", logLocation);
         inputLog = new Log("server" + serverNumber + "-input", logLocation);
     }
-
-    
 
     public void writeCommand(String msg) {
         this.msg = msg;
@@ -85,7 +87,7 @@ public class Server implements Runnable {
         javaCommand.append("\"" + jarFile.getAbsolutePath() + "\"");
         // javaCommand.append(" nogui"); TODO: undo
 
-        if (App.isWindows) {//TODO: replace with settings.java
+        if (App.isWindows) {// TODO: replace with settings.java
             pb.command("cmd.exe", "/c", javaCommand.toString());
         } else {
             pb.command("bash", "-c", javaCommand.toString());
@@ -159,6 +161,7 @@ public class Server implements Runnable {
                 while ((line = reader.readLine()) != null) {
                     log.println(line);
                     processOutput.processLine(line);
+
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
