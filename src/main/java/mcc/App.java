@@ -1,6 +1,7 @@
 package mcc;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.security.auth.login.LoginException;
 
@@ -11,6 +12,7 @@ import mcc.server.Server;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import mcc.configs.Config;
+import mcc.configs.ConfigDiscord;
 import mcc.configs.ConfigServer;
 
 /**
@@ -28,8 +30,15 @@ public class App {
     public static Log error;
     public static Log normal;
     public static boolean isWindows = false;
+    public static ArrayList<Server> servers;
 
     public static void main(String[] args) throws InterruptedException {
+        
+        //Initialze globle Varables
+        servers = new ArrayList<Server>();
+
+        //Create Log Files
+        
         File logLocation = new File(LOG_LOCATION);
         error = new Log("error", logLocation);
         normal = new Log("normal", logLocation);
@@ -40,10 +49,15 @@ public class App {
         String msg = CURRENT_SYSTEM_OS_MSG + os;
         error.println(msg);
         normal.printlnOut(msg);
+
+        //Load Config
+
         Config config = Config.getInstance();
         config.loadConfig();
 
-        if(config.isEnable_discord()){
+        //Discord Start
+
+        if(config.getConfigDiscord().isEnable_discord()){
             try {
                 DBot.main();
             } catch (LoginException e1) {
@@ -52,6 +66,8 @@ public class App {
             }
         } 
         
+        //Start configured servers
+
         try {
             for (ConfigServer configServer : config.getServers()) {
                 startServer(configServer);
@@ -61,6 +77,7 @@ public class App {
             e.printStackTrace();
             error.printlnOut(e.getMessage());
         }
+        
 
     }
 
@@ -73,12 +90,16 @@ public class App {
             throw new MissingFileException("Missing jar File");
         }
 
-        Server server1 = new Server(config);
-        Thread t = new Thread(server1);
+        Server server = new Server(config);
+        servers.add(server);
+        Thread t = new Thread(server);
         t.start();
     }
 
     public static void createServer(int serverNumber, String jarFileName) throws MissingFileException {
+
+        //TODO dynamic server numbering
+
         File directory = new File("Minecraft/server" + serverNumber);
         directory.mkdirs();
         File jarFile = new File(directory, jarFileName);

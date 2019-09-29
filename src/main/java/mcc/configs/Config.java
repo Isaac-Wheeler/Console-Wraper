@@ -15,9 +15,9 @@ public class Config {
     // variables
     private String created;
     private int number_of_servers;
-    private String dicord_bot_Token_string;
-    private Boolean enable_discord;
+    private ConfigDiscord configDiscord;
     private ArrayList<ConfigServer> servers;
+    
 
     // private constructor
     private Config() {
@@ -29,6 +29,11 @@ public class Config {
             single_instance = new Config();
         }
         return single_instance;
+    }
+
+    public void updateConfig(){
+        saveConfig();
+        loadConfig();
     }
 
     public void saveConfig() {
@@ -52,8 +57,7 @@ public class Config {
             this.created = copy.created;
             this.number_of_servers = copy.number_of_servers;
             this.servers = copy.servers;
-            this.dicord_bot_Token_string = copy.dicord_bot_Token_string;
-            this.enable_discord = copy.enable_discord;
+            this.configDiscord = copy.configDiscord;
             // TODO: keep adding varaibles here;
 
         } catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
@@ -69,12 +73,12 @@ public class Config {
 
     public void addServer(ConfigServer server) {
         this.servers.add(server);
-        saveConfig();
+        updateConfig();
     }
 
     public void setServers(ArrayList<ConfigServer> servers) {
         this.servers = servers;
-        saveConfig();
+        updateConfig();
     }
 
     public int getNumber_of_servers() {
@@ -83,29 +87,17 @@ public class Config {
 
     public void setNumber_of_servers(int number_of_servers) {
         this.number_of_servers = number_of_servers;
-        saveConfig();
+        updateConfig();
+    }
+    
+    public ConfigDiscord getConfigDiscord() {
+        return this.configDiscord;
     }
 
-    public String getDicord_bot_Token_string() {
-        return this.dicord_bot_Token_string;
+    public void setConfigDiscord(ConfigDiscord configDiscord) {
+        this.configDiscord = configDiscord;
+        updateConfig();
     }
 
-    public void setDicord_bot_Token_string(String dicord_bot_Token_string) {
-        this.dicord_bot_Token_string = dicord_bot_Token_string;
-        saveConfig();
-    }
-
-    public Boolean isEnable_discord() {
-        return this.enable_discord;
-    }
-
-    public Boolean getEnable_discord() {
-        return this.enable_discord;
-    }
-
-    public void setEnable_discord(Boolean enable_discord) {
-        this.enable_discord = enable_discord;
-        saveConfig();
-    }
 
 }

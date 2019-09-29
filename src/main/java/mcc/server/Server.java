@@ -85,7 +85,7 @@ public class Server implements Runnable {
         }
         javaCommand.append("-jar ");
         javaCommand.append("\"" + jarFile.getAbsolutePath() + "\"");
-        // javaCommand.append(" nogui"); TODO: undo
+        javaCommand.append(" nogui"); 
 
         if (App.isWindows) {// TODO: replace with settings.java
             pb.command("cmd.exe", "/c", javaCommand.toString());
