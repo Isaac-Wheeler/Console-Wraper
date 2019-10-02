@@ -36,6 +36,10 @@ public class Server implements Runnable {
 
     State serverState;
 
+    public ConfigServer getConfigServer(){
+        return this.config;
+    }
+
     public void setState(State state) {
         serverState = state;
     }
@@ -87,7 +91,7 @@ public class Server implements Runnable {
         javaCommand.append("\"" + jarFile.getAbsolutePath() + "\"");
         javaCommand.append(" nogui"); 
 
-        if (App.isWindows) {// TODO: replace with settings.java
+        if (App.isWindows()) {// TODO: replace with settings.java
             pb.command("cmd.exe", "/c", javaCommand.toString());
         } else {
             pb.command("bash", "-c", javaCommand.toString());

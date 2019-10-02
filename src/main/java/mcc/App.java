@@ -27,10 +27,11 @@ public class App {
 
     private static final String LOG_LOCATION = "Log";
     private static final String CURRENT_SYSTEM_OS_MSG = "Current System os is : ";
-    public static Log error;
-    public static Log normal;
-    public static boolean isWindows = false;
-    public static ArrayList<Server> servers;
+
+    private static Log error;
+    private static Log normal;
+    private static boolean isWindows = false;
+    private static ArrayList<Server> servers;
 
     public static void main(String[] args) throws InterruptedException {
         
@@ -44,7 +45,7 @@ public class App {
         normal = new Log("normal", logLocation);
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("windows")) {
-            isWindows = true;
+            App.isWindows = true;
         }
         String msg = CURRENT_SYSTEM_OS_MSG + os;
         error.println(msg);
@@ -122,4 +123,24 @@ public class App {
         System.exit(exitCode);
     }
 
+
+    public static ArrayList<Server> getServers(){
+        return servers;
+    }
+
+    public static void addServer(Server server){
+        servers.add(server);
+    }
+
+    public static Log getError(){
+        return App.error;
+    }
+
+    public static Log getNormal(){
+        return App.normal;
+    }
+
+    public static boolean isWindows(){
+        return App.isWindows;
+    }
 }

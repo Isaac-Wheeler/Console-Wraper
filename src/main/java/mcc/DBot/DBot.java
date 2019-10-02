@@ -33,6 +33,8 @@ import mcc.App;
 import mcc.configs.Config;
 import mcc.configs.ConfigDiscord;
 import mcc.configs.ConfigServer;
+import mcc.server.Server;
+import mcc.server.State;
 
 public class DBot extends ListenerAdapter {
 
@@ -126,11 +128,11 @@ public class DBot extends ListenerAdapter {
             for (ConfigServer var : configServers) {
                 if (var.getChannelID().equals(channel)) {
                     if (isCommand) {
-                        App.servers.get(var.getServerNumber() - 1)
+                        App.getServers().get(var.getServerNumber() - 1)
                                 .writeCommand(event.getMessage().getContentRaw().substring(1));
                         return true;
                     } else {
-                        App.servers.get(var.getServerNumber() - 1)
+                        App.getServers().get(var.getServerNumber() - 1)
                                 .writeCommand("/say " + user.getName() + ": " + event.getMessage().getContentRaw());
                         return true;
                     }
@@ -144,22 +146,39 @@ public class DBot extends ListenerAdapter {
     }
 
     public boolean staticMessageHandles(MessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().equals("!ping")) {
+        String message = event.getMessage().getContentRaw();
+        if (message.equals("!ping")) {
             event.getChannel().sendMessage("Pong!").queue();
             return true;
         }
-        if (event.getMessage().getContentRaw().equals("!quit")) {
+        if (message.equals("!quit")) {
             App.exit(0);
             return true;
         }
-        if (event.getMessage().getContentRaw().equals("!console")) {
+        if (message.equals("!console")) {
             event.getChannel().sendMessage("channel ID: " + event.getChannel().getId()).queue();
+            return true;
+        }
+        if (message.equals("!list servers")) {
+            MessageChannel mChannel = event.getChannel();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setAuthor("Minecraft Control Panel");
+            for (Server var : App.getServers()) {
+                embedBuilder.addField("Server Number", var.getConfigServer().getServerNumber() + "", true);
+                embedBuilder.addField("Server Name", var.getConfigServer().getServerName(), true);
+                embedBuilder.addField("Server State", var.getState().toString(), true);
+            }
+            mChannel.sendMessage("server list").embed(embedBuilder.build()).queue();
+            return true;
+        }
+        if (message.contains("!stop server")){
+            event.getChannel().sendMessage("hit").queue();
             return true;
         }
         return false;
     }
 
-    public boolean verifyUserPermissions(User user){
+    public boolean verifyUserPermissions(User user) {
         ConfigDiscord configDiscord = Config.getInstance().getConfigDiscord();
         Guild guild = api.getGuildById(configDiscord.getDiscord_bot_Guild_id());
         Role role = guild.getRoleById(configDiscord.getMinecraft_console_role_id());
@@ -177,13 +196,13 @@ public class DBot extends ListenerAdapter {
 
     public void writeImage(String channelID, String url, String description) {
         try {
-       
-        MessageChannel console = api.getTextChannelById(channelID);
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setDescription(description);
-        InputStream file = new URL(url).openStream();
-        eb.setImage("attachment://player.png");
-        console.sendFile(file, "player.png").embed(eb.build()).queue();
+
+            MessageChannel console = api.getTextChannelById(channelID);
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setDescription(description);
+            InputStream file = new URL(url).openStream();
+            eb.setImage("attachment://player.png");
+            console.sendFile(file, "player.png").embed(eb.build()).queue();
 
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block

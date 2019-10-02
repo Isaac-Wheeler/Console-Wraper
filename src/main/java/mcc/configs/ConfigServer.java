@@ -8,6 +8,7 @@ public class ConfigServer {
     int serverNumber;
     String[] args;
     String channelID;
+    String serverName;
 
     public ConfigServer(File jarFile, File directory, int serverNumber, String[] args, String channelID) {
         this.jarFile = jarFile;
@@ -56,6 +57,14 @@ public class ConfigServer {
 
     public void setChannelID(String channelID) {
         this.channelID = channelID;
+    }
+
+    public String getServerName() {
+        return this.serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 
 
