@@ -8,42 +8,48 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import com.google.gson.*;
 
-public class Config{
-    //static variable single_instance to create singleton;
+public class Config {
+    // static variable single_instance to create singleton;
     private static Config single_instance = null;
 
-    //variables
+    // variables
     private String created;
     private int number_of_servers;
+    private ConfigDiscord configDiscord;
     private ArrayList<ConfigServer> servers;
+    
 
-    //private constructor
-    private Config(){
+    // private constructor
+    private Config() {
         this.servers = new ArrayList<ConfigServer>();
     }
 
-    public static Config getInstance(){
-        if(single_instance == null){
+    public static Config getInstance() {
+        if (single_instance == null) {
             single_instance = new Config();
         }
         return single_instance;
     }
 
+    public void updateConfig(){
+        saveConfig();
+        loadConfig();
+    }
 
-    public void saveConfig(){
+    public void saveConfig() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Date mydate = new Date();
 
         created = mydate.toString();
 
-        try(FileWriter writer = new FileWriter("config.json")){
+        try (FileWriter writer = new FileWriter("config.json")) {
             gson.toJson(this, writer);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void loadConfig(){
+    public void loadConfig() {
         Gson gson = new Gson();
 
         try {
@@ -51,28 +57,28 @@ public class Config{
             this.created = copy.created;
             this.number_of_servers = copy.number_of_servers;
             this.servers = copy.servers;
-            //TODO: keep adding varaibles here;
+            this.configDiscord = copy.configDiscord;
+            // TODO: keep adding varaibles here;
 
-		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+        } catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
-
-    public ArrayList<ConfigServer> getServers(){
+    public ArrayList<ConfigServer> getServers() {
         return this.servers;
     }
 
-    public void addServer(ConfigServer server){
+    public void addServer(ConfigServer server) {
         this.servers.add(server);
-        saveConfig();
+        updateConfig();
     }
 
-    public void setServers(ArrayList<ConfigServer> servers){
+    public void setServers(ArrayList<ConfigServer> servers) {
         this.servers = servers;
-        saveConfig();
+        updateConfig();
     }
 
     public int getNumber_of_servers() {
@@ -81,7 +87,17 @@ public class Config{
 
     public void setNumber_of_servers(int number_of_servers) {
         this.number_of_servers = number_of_servers;
-        saveConfig();
+        updateConfig();
     }
+    
+    public ConfigDiscord getConfigDiscord() {
+        return this.configDiscord;
+    }
+
+    public void setConfigDiscord(ConfigDiscord configDiscord) {
+        this.configDiscord = configDiscord;
+        updateConfig();
+    }
+
 
 }

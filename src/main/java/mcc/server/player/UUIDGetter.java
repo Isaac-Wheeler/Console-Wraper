@@ -31,7 +31,6 @@ public class UUIDGetter{
 	            //UUID without hyphens.
 	            String sUUID = je.getAsJsonObject().get("id").getAsString();
 				//UUID with hyphens, this is optional but this is the kind of UUID sponge uses.
-				System.out.println(sUUID);
 	            String uuid = 
 	                sUUID.substring(0, Math.min(sUUID.length(), 8))
 	                    + "-"

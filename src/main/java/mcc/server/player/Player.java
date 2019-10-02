@@ -10,7 +10,7 @@ public class Player {
 
     String uuid, name, rank;
     Ops op;
-    URI playerAvatar;
+    URI playerAvatar, playerBody;
 
     private void loadSkin() {
         // Source: https://crafatar.com/
@@ -21,6 +21,7 @@ public class Player {
 
         try {
             this.playerAvatar = new URI("https://crafatar.com/avatars/" + uuid);
+            this.playerBody = new URI("https://crafatar.com/renders/body/" + uuid);
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -109,6 +110,17 @@ public class Player {
     public void setPlayerAvatar(URI playerAvatar) {
         this.playerAvatar = playerAvatar;
     }
+
+
+    public URI getPlayerBody() {
+        return this.playerBody;
+    }
+
+    public void setPlayerBody(URI playerBody) {
+        this.playerBody = playerBody;
+    }
+
+    
 
     @Override
     public String toString() {
