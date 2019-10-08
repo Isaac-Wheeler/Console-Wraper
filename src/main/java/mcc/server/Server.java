@@ -77,6 +77,11 @@ public class Server implements Runnable {
         process.destroyForcibly();
     }
 
+    public void startServer(){
+        Thread t = new Thread(this);
+        t.start();
+    }
+
     @Override
     public void run() {
 

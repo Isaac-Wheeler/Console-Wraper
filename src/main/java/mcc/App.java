@@ -93,13 +93,14 @@ public class App {
 
         Server server = new Server(config);
         servers.add(server);
-        Thread t = new Thread(server);
-        t.start();
+        server.startServer();
     }
 
-    public static void createServer(int serverNumber, String jarFileName) throws MissingFileException {
+    public static void createServer(String jarFileName, String[] args ) throws MissingFileException {
 
         //TODO dynamic server numbering
+        int serverNumber = Config.getInstance().getNumber_of_servers() + 1;
+        Config.getInstance().setNumber_of_servers(serverNumber);
 
         File directory = new File("Minecraft/server" + serverNumber);
         directory.mkdirs();
@@ -109,10 +110,8 @@ public class App {
             throw new MissingFileException("Missing jar File");
         }
 
-        String[] args = {"-Xmx1024M ","-Xms1024M "}; //todo add java options, create via dynamic 
-
         //TODO add to config / load from config
-        ConfigServer server = new ConfigServer(jarFile, directory, serverNumber, args, "627358163217416203");
+        ConfigServer server = new ConfigServer(jarFile, directory, serverNumber, args, "");
         Config.getInstance().addServer(server);
     }
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import javax.security.auth.login.LoginException;
+import javax.swing.text.DefaultStyledDocument.ElementSpec;
 
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -123,23 +124,19 @@ public class DBot extends ListenerAdapter {
             isCommand = true;
         }
         User user = event.getAuthor();
-        if (verifyUserPermissions(user)) {
-            ArrayList<ConfigServer> configServers = Config.getInstance().getServers();
-            for (ConfigServer var : configServers) {
-                if (var.getChannelID().equals(channel)) {
-                    if (isCommand) {
-                        App.getServers().get(var.getServerNumber() - 1)
-                                .writeCommand(event.getMessage().getContentRaw().substring(1));
-                        return true;
-                    } else {
-                        App.getServers().get(var.getServerNumber() - 1)
-                                .writeCommand("/say " + user.getName() + ": " + event.getMessage().getContentRaw());
-                        return true;
-                    }
-
+        ArrayList<ConfigServer> configServers = Config.getInstance().getServers();
+        for (ConfigServer var : configServers) {
+            if (var.getChannelID().equals(channel)) {
+                if (isCommand && verifyUserPermissions(user)) {
+                    App.getServers().get(var.getServerNumber())
+                            .writeCommand(event.getMessage().getContentRaw().substring(1));
+                    return true;
+                } else {
+                    App.getServers().get(var.getServerNumber())
+                            .writeCommand("/say " + user.getName() + ": " + event.getMessage().getContentRaw());
+                    return true;
                 }
             }
-
         }
 
         return false;
@@ -171,11 +168,65 @@ public class DBot extends ListenerAdapter {
             mChannel.sendMessage("server list").embed(embedBuilder.build()).queue();
             return true;
         }
-        if (message.contains("!stop server")){
-            event.getChannel().sendMessage("hit").queue();
+        if (message.contains("!stop server")) {
+            if (verifyUserPermissions(event.getAuthor())) {
+                String[] msgSplit = message.split(" ");
+                ServerStartStop(msgSplit, event, Action.STOP);
+            } else {
+                event.getChannel().sendMessage("Sorry you do not have permission to do that").queue();
+            }
+
+            return true;
+        }
+        if (message.contains("!force-stop server")) {
+            if (verifyUserPermissions(event.getAuthor())) {
+                String[] msgSplit = message.split(" ");
+                ServerStartStop(msgSplit, event, Action.FORCE_STOP);
+            } else {
+                event.getChannel().sendMessage("Sorry you do not have permission to do that").queue();
+            }
+            return true;
+        }
+        if (message.contains("!start server")) {
+            if (verifyUserPermissions(event.getAuthor())) {
+                String[] msgSplit = message.split(" ");
+                ServerStartStop(msgSplit, event, Action.START);
+            } else {
+                event.getChannel().sendMessage("Sorry you do not have permission to do that").queue();
+            }
             return true;
         }
         return false;
+    }
+
+    enum Action {
+        START, STOP, FORCE_STOP;
+    }
+
+    public void ServerStartStop(String[] msgSplit, MessageReceivedEvent event, Action action) {
+        if (msgSplit.length == 3) {
+            int ServerNumber = Integer.parseInt(msgSplit[2]);
+            if (ServerNumber > App.getServers().size()) {
+                event.getChannel().sendMessage("Error: Server does not exist");
+            }
+            Server server = App.getServers().get(ServerNumber);
+            switch (action) {
+            case START:
+                event.getChannel().sendMessage("Starting server " + msgSplit[2]).queue();
+                server.startServer();
+                break;
+            case STOP:
+                event.getChannel().sendMessage("Stopping server " + msgSplit[2]).queue();
+                server.StopServer();
+                break;
+            case FORCE_STOP:
+                event.getChannel().sendMessage("Forcing Stop of server " + msgSplit[2]).queue();
+                server.ForceStopServer();
+                break;
+            }
+        } else {
+            // TODO handle false positive
+        }
     }
 
     public boolean verifyUserPermissions(User user) {
